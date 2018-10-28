@@ -1,0 +1,26 @@
+language: python
+sudo: required
+os:
+- linux
+python:
+- 3.4
+- 3.5
+- 3.6
+- 3.7
+env:
+  matrix:
+  - MYSQLCLIENT_VERSION=1.13.2
+  global:
+    secure: qnU9dkeeFjxq4zBX0MXrPRUYdf7KIt1vfIa0x9RlmpMl83hGf7rjilNH1Mg7wmT5iQUbZPVwDwVCnRcyOc7IJDq8y+cCzxyLSoisPv3QHvxwq7klWwDvAWZ1PW4xF6YtFo9wRijZFocoKXBvZsvKyINOSUixzzqDXNs5NjHPL28eMEnENz8H00Mfk9ipgIg/ayQ1LeC5vIlZWdIpuAMEuFd9mFxRhXCAK2d3Lm3SPPzAQ8c2wUnjzZWulZa1EX0dg6PcD6DynzbgLmR3GK3yBmlAQkN2k55KcZxyXQWCwEhmS2sZnW8v2HvH5u1bUaO8bK3utqBZ1A297PiFOyNqqM54nA0H4IBPmcEWRaeJKAnEIBKsKGLaomw/fjecbvAU9gHtNq3/ukgaDWycelV61QkDH3HGZw8mLx+HxnsWtA6oGhRiY/dVeB4Q/rj5+eN6SLnlzHRalTGJEc72BhjulaJc67bVnZbChpSm+A/MH1qAaB767w5gaGgC8jeEBV5/0djkZh7+gFCc6UIPaMggPzVDXxJlymwQt3UDnd0KWeMkuYD0ZN7ut9Y97A2reAhNPGd7I/R9Vjh8xZauQ8131+ClTGRTZj/Yh2rrQUngbPqDmUReuOgq4p92iW7QXuvnDl6R/8MlNNEuwZv0uVv9QVXkqnuI8psaLy13AVkLz4o=
+services:
+- docker
+before_install:
+- docker pull quay.io/pypa/manylinux1_x86_64
+script:
+- mkdir io
+- docker run --rm -w /root -v $(pwd)/io:/root/io --env PYTHON_VERSION=$TRAVIS_PYTHON_VERSION 
+  --env MYSQLCLIENT_VERSION -it quay.io/pypa/manylinux1_x86_64:latest /bin/bash -c
+  "/root/io/build.sh"
+after_success:
+- devpi login travis --password $DEVPI_PASSWORD
+- devpi upload --index base/pypi --from-dir io

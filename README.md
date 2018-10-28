@@ -1,1 +1,1 @@
-# mysql-python-wheels
+# mysqlclient-wheels

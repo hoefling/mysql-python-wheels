@@ -19,7 +19,7 @@ auditwheel repair "dist/mysqlclient-${MYSQLCLIENT_VERSION}-${_pyver}-${_abi}-lin
 cd /root
 
 # prepare env for tests
-"$_python" -m pip install pytest mock "/root/io/mysqlclient-${MYSQLCLIENT_VERSION}-${_pyver}-${_abi}_manylinux_x86_64.whl"
+"$_python" -m pip install pytest mock "/root/io/mysqlclient-${MYSQLCLIENT_VERSION}-${_pyver}-${_abi}-manylinux1_x86_64.whl"
 yum install -y mysql-server
 chkconfig mysqld on
 service mysqld start

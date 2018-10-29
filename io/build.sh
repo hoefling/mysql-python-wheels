@@ -6,12 +6,11 @@ _abi="cp${PYTHON_VERSION}m"
 _python="/opt/python/$_pyver-$_abi"/bin/python
 _pip="/opt/python/$_pyver-$_abi"/bin/pip
 
+# prepare env for build
+yum install -y mysql-devel
 # download and unpack mysqlclient source dist
 "$_pip" download --no-binary=mysqlclient --no-deps "mysqlclient==$MYSQLCLIENT_VERSION"
 tar xzvf "mysqlclient-$MYSQLCLIENT_VERSION.tar.gz"
-
-# prepare env for build
-yum install -y mysql-devel
 
 # build
 cd "mysqlclient-$MYSQLCLIENT_VERSION"

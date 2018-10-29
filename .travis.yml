@@ -22,5 +22,6 @@ script:
   --env MYSQLCLIENT_VERSION -it quay.io/pypa/manylinux1_x86_64:latest /bin/bash -c
   "/root/io/build.sh"
 after_success:
+- devpi use https://pypi-mirror.herokuapp.com/base/pypi/+simple
 - devpi login travis --password $DEVPI_PASSWORD
 - devpi upload --index base/pypi --from-dir io

@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 # declare some useful vars
-_pyver="cp$PYTHON_VERSION"
-_abi="cp${PYTHON_VERSION}m"
-_python="/opt/python/${_pyver}-${_abi}"/bin/python
-_pip="/opt/python/${_pyver}-${_abi}"/bin/pip
+INTERPRETER="cp$PYTHON_VERSION"
+ABI="${INTERPRETER}m"
+_prefix="/opt/python/${INTERPRETER}-${ABI}"
+_python="$_prefix"/bin/python
+_pip="${_prefix}"/bin/pip
 
 # prepare env for build
 yum install -y mysql-devel
@@ -15,11 +16,11 @@ tar xzvf "mysqlclient-${MYSQLCLIENT_VERSION}.tar.gz"
 # build
 cd "mysqlclient-$MYSQLCLIENT_VERSION"
 "$_python" setup.py bdist_wheel clean
-auditwheel repair "dist/mysqlclient-${MYSQLCLIENT_VERSION}-${_pyver}-${_abi}-linux_x86_64.whl" -w /root/io
+auditwheel repair "dist/mysqlclient-${MYSQLCLIENT_VERSION}-${INTERPRETER}-${ABI}-linux_x86_64.whl" -w /root/io
 rm -rf build dist mysqlclient.egg-info __pycache__
 
 # prepare env for tests
-"$_python" -m pip install pytest mock "/root/io/mysqlclient-${MYSQLCLIENT_VERSION}-${_pyver}-${_abi}-manylinux1_x86_64.whl"
+"$_python" -m pip install pytest mock "/root/io/mysqlclient-${MYSQLCLIENT_VERSION}-${INTERPRETER}-${ABI}-manylinux1_x86_64.whl"
 yum install -y mysql-server
 chkconfig mysqld on
 service mysqld start
@@ -34,4 +35,4 @@ default-character-set = utf8
 EOM
 
 # test
-TESTDB=default.cnf "/opt/python/${_pyver}-${_abi}"/bin/pytest
+TESTDB=default.cnf "${_prefix}"/bin/pytest

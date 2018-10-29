@@ -14,9 +14,9 @@ tar xzvf "mysqlclient-${MYSQLCLIENT_VERSION}.tar.gz"
 
 # build
 cd "mysqlclient-$MYSQLCLIENT_VERSION"
-"$_python" setup.py bdist_wheel
+"$_python" setup.py bdist_wheel clean
 auditwheel repair "dist/mysqlclient-${MYSQLCLIENT_VERSION}-${_pyver}-${_abi}-linux_x86_64.whl" -w /root/io
-cd /root
+rm -rf build dist mysqlclient.egg-info __pycache__
 
 # prepare env for tests
 "$_python" -m pip install pytest mock "/root/io/mysqlclient-${MYSQLCLIENT_VERSION}-${_pyver}-${_abi}-manylinux1_x86_64.whl"

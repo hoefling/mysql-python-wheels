@@ -2,7 +2,7 @@
 
 # declare some useful vars
 _pyver="cp$PYTHON_VERSION"
-_abi="cp$PYTHON_VERSIONm"
+_abi="cp${PYTHON_VERSION}m"
 _python="/opt/python/$_pyver-$_abi"/bin/python
 _pip="/opt/python/$_pyver-$_abi"/bin/pip
 

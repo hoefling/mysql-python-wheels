@@ -17,8 +17,8 @@ services:
 before_install:
 - docker pull quay.io/pypa/manylinux1_x86_64
 script:
-- mkdir io
-- docker run --rm -w /root -v $(pwd)/io:/root/io --env PYTHON_VERSION=$TRAVIS_PYTHON_VERSION 
+- export PYTHON_VERSION=$(echo $TRAVIS_PYTHON_VERSION | sed 's/[^0-9]*//g')
+- docker run --rm -w /root -v $(pwd)/io:/root/io --env PYTHON_VERSION 
   --env MYSQLCLIENT_VERSION -it quay.io/pypa/manylinux1_x86_64:latest /bin/bash -c
   "/root/io/build.sh"
 after_success:

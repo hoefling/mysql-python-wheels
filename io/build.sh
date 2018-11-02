@@ -36,7 +36,7 @@ host = 127.0.0.1
 port = 3306
 user = root
 database = mysqldb_test
-default-character-set = utf8
+default-character-set = utf8mb4
 EOM
 
 # test

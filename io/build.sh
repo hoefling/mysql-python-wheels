@@ -8,6 +8,11 @@ _python="$_prefix"/bin/python
 _pip="${_prefix}"/bin/pip
 
 # prepare env for build
+# add atomic repo for mysql 5.5
+yum install -y wget
+wget -q http://www.atomicorp.com/installers/atomic
+sed -i 's/query=$INPUTTEXT/query="yes"/g; /check_input "/d' atomic
+sh ./atomic
 yum install -y mysql-devel
 # download and unpack mysqlclient source dist
 "$_pip" download --no-binary=mysqlclient --no-deps "mysqlclient==$MYSQLCLIENT_VERSION"

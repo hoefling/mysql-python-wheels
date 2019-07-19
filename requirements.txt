@@ -1,1 +1,4 @@
 devpi-client
+# e.g. https://travis-ci.org/hoefling/mysqlclient-wheels-manylinux1_x86_64/builds/561184164
+# may be only temporarily necessary though
+pluggy>=0.12.0

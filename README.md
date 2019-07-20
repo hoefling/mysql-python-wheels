@@ -6,7 +6,7 @@ Python versions:
  * 3.5
  * 3.6
  * 3.7
- 
+
 `mysqlclient` versions:
 
  * 1.3.12
@@ -16,7 +16,7 @@ Python versions:
 To install the binary wheels, use the http://pypi-mirror.herokuapp.com/ repository:
 
 ```sh
-$ pip install mysqlclient --extra-index-url=https://pypi-mirror.herokuapp.com/base/pypi/+simple
+$ pip install mysqlclient --extra-index-url=https://pypi-mirror.herokuapp.com/root/pypi/+simple
 ```
 
 [![Build Status](https://travis-ci.org/hoefling/mysqlclient-wheels-manylinux1_x86_64.svg?branch=master)](https://travis-ci.org/hoefling/mysqlclient-wheels-manylinux1_x86_64)

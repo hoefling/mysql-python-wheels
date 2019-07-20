@@ -10,21 +10,57 @@ python:
 - 3.7
 env:
   matrix:
-  - MYSQLCLIENT_VERSION=1.3.12
-  - MYSQLCLIENT_VERSION=1.3.13
+#  - MYSQLCLIENT_VERSION=1.3.12
+#  - MYSQLCLIENT_VERSION=1.3.13
   - MYSQLCLIENT_VERSION=1.4.2.post1
   global:
     secure: qnU9dkeeFjxq4zBX0MXrPRUYdf7KIt1vfIa0x9RlmpMl83hGf7rjilNH1Mg7wmT5iQUbZPVwDwVCnRcyOc7IJDq8y+cCzxyLSoisPv3QHvxwq7klWwDvAWZ1PW4xF6YtFo9wRijZFocoKXBvZsvKyINOSUixzzqDXNs5NjHPL28eMEnENz8H00Mfk9ipgIg/ayQ1LeC5vIlZWdIpuAMEuFd9mFxRhXCAK2d3Lm3SPPzAQ8c2wUnjzZWulZa1EX0dg6PcD6DynzbgLmR3GK3yBmlAQkN2k55KcZxyXQWCwEhmS2sZnW8v2HvH5u1bUaO8bK3utqBZ1A297PiFOyNqqM54nA0H4IBPmcEWRaeJKAnEIBKsKGLaomw/fjecbvAU9gHtNq3/ukgaDWycelV61QkDH3HGZw8mLx+HxnsWtA6oGhRiY/dVeB4Q/rj5+eN6SLnlzHRalTGJEc72BhjulaJc67bVnZbChpSm+A/MH1qAaB767w5gaGgC8jeEBV5/0djkZh7+gFCc6UIPaMggPzVDXxJlymwQt3UDnd0KWeMkuYD0ZN7ut9Y97A2reAhNPGd7I/R9Vjh8xZauQ8131+ClTGRTZj/Yh2rrQUngbPqDmUReuOgq4p92iW7QXuvnDl6R/8MlNNEuwZv0uVv9QVXkqnuI8psaLy13AVkLz4o=
+matrix:
+  include:
+  - name: "Python: 2.7"
+    os: osx
+    osx_image: xcode6.4
+    language: shell
+    env:
+    - TRAVIS_PYTHON_VERSION=2.7
+    - TOXENV=py27
+    - MYSQLCLIENT_VERSION=1.4.2.post1
+    - INSTALLER_URL=https://www.python.org/ftp/python/2.7.16/python-2.7.16-macosx10.9.pkg
+  - name: "Python: 3.7"
+    os: osx
+    osx_image: xcode6.4
+    language: shell
+    env:
+    - TRAVIS_PYTHON_VERSION=3.7
+    - TOXENV=py37
+    - MYSQLCLIENT_VERSION=1.4.2.post1
+    - INSTALLER_URL=https://www.python.org/ftp/python/3.7.4/python-3.7.4-macosx10.9.pkg
 services:
 - docker
 before_install:
-- docker pull quay.io/pypa/manylinux1_x86_64
+- |
+  if [ $TRAVIS_OS_NAME = 'linux' ]; then
+    docker pull quay.io/pypa/manylinux1_x86_64
+  elif [ $TRAVIS_OS_NAME = 'osx' ]; then
+    # install python
+    wget --quiet $INSTALLER_URL
+    INSTALLER=${INSTALLER_URL##*/}
+    sudo installer -pkg $INSTALLER -target /
+    export PATH="/Library/Frameworks/Python.framework/Versions/${TRAVIS_PYTHON_VERSION}/bin:$HOME/Library/Python/${TRAVIS_PYTHON_VERSION}/bin:$PATH"
+    python${TRAVIS_PYTHON_VERSION} -m pip install --user -r requirements.txt
+    # install mysql
+    brew search mysql
+    brew install mysql mysql-connector-c
+  fi
 script:
-- export PYTHON_VERSION=$(echo $TRAVIS_PYTHON_VERSION | sed 's/[^0-9]*//g')
-- docker run --rm -w /root -v $(pwd)/io:/root/io --env PYTHON_VERSION 
-  --env MYSQLCLIENT_VERSION -it quay.io/pypa/manylinux1_x86_64:latest /bin/bash -c
-  "/root/io/build.sh"
+- |
+  if [ $TRAVIS_OS_NAME = 'linux' ]; then
+    export PYTHON_VERSION=$(echo $TRAVIS_PYTHON_VERSION | sed 's/[^0-9]*//g')
+    docker run --rm -w /root -v $(pwd)/io:/root/io --env PYTHON_VERSION --env MYSQLCLIENT_VERSION -it quay.io/pypa/manylinux1_x86_64:latest /bin/bash -c "/root/io/build.sh"
+  elif [ $TRAVIS_OS_NAME = 'osx' ]; then
+    echo TOXENV=${TOXENV} MYSQLCLIENT_VERSION=${MYSQLCLIENT_VERSION}
+  fi
 after_success:
 - devpi use https://pypi-mirror.herokuapp.com/root/pypi/+simple
 - devpi login travis --password $DEVPI_PASSWORD
-- devpi upload --index root/pypi --from-dir io
+#- devpi upload --index root/pypi --from-dir io

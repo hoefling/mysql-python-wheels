@@ -3,7 +3,6 @@
 Python versions:
 
  * 2.7
- * 3.4
  * 3.5
  * 3.6
  * 3.7
@@ -12,7 +11,7 @@ Python versions:
 
  * 1.3.12
  * 1.3.13
-
+ * 1.4.2.post1
 
 To install the binary wheels, use the http://pypi-mirror.herokuapp.com/ repository:
 
